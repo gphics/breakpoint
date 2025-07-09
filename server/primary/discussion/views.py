@@ -31,30 +31,31 @@ class BasicCRUDView(APIView):
             > Basically an admin cannot become a member of a discussion unless the admin status has been revoked
             > and vice versa
 
-        * Req url params:
+        * Req & Opt url params:
             > d (discussion id)
             > c (community id)
         """
         d_id = req.GET.get("d", None)
         c_id = req.GET.get("c", None)
-        community = Community.objects.filter(pk=c_id)
-        if not community.exists():
-            return Response(generate_res(err={"msg": "community does not exists"}))
-        community = community[0]
-        is_c_admin = is_community_admin(community, req.user.pk)
+       
 
-        # if title isnt provided
+        # if community id is provided
         # return all discussions that have the req.user as a member or is the community admin
-        if not d_id:
-            x = Discussion.objects.filter(community=c_id)
-            y = []
-            for z in x:
-                if req.user.pk in z.members or is_c_admin:
-                    y.append(z)
+        if c_id:
+            community = Community.objects.filter(pk=c_id)
+            if not community.exists():
+                return Response(generate_res(err={"msg": "community does not exists"}))
+            community = community[0]
+            is_c_admin = is_community_admin(community, req.user.pk)
+            community_discussions = Discussion.objects.filter(community=c_id)
+            y = [] 
+            for community_discussion  in community_discussions:
+                if req.user.pk in list(community_discussion.members) or is_c_admin:
+                    y.append(community_discussion)
             ser = discussion_read_serializer(instance=y, many=True)
             return Response(generate_res({"msg": ser.data}))
 
-        # if title provided
+        # if discussion id is provided
         discussion = Discussion.objects.filter(pk=d_id)
         if not discussion.exists():
             return Response(generate_res(err={"msg": "discussion does not exist"}))
@@ -64,7 +65,7 @@ class BasicCRUDView(APIView):
     def post(self, req):
         """
         * Req data:
-            > title
+            > title 
             > description
             > c_id (community id)
         """
@@ -143,7 +144,7 @@ class BasicCRUDView(APIView):
         if description:
             discussion.description = description
         discussion.save()
-        return Response(generate_res(err={"msg": "discussion updated successfully"}))
+        return Response(generate_res({"msg": "discussion updated successfully"}))
 
     def delete(self, req):
         d_id = req.GET.get("d", None)
@@ -154,6 +155,8 @@ class BasicCRUDView(APIView):
         if not discussion.exists():
             return Response(generate_res(err={"msg": "discussion does not exists"}))
         discussion = discussion[0]
+        if discussion.title == "Announcement":
+            return Response(generate_res(err={"msg": "Announcement discussion cannot be deleted"}))
         # validating permissibility
         community = Community.objects.filter(pk=discussion.community.pk)[0]
         is_permitted = is_community_admin(community, req.user.pk)
@@ -180,12 +183,12 @@ def update_members(req):
         > check if not admin
         > confirm if community member
 
-    """
+    """  
     user_id = req.data.get("user_id", None)
     d_id = req.data.get("d_id", None)
     c_id = req.data.get("c_id", None)
     action = req.data.get("action", "ADD")
-
+ 
     if not user_id or not d_id or not c_id:
         return Response(generate_res(err={"msg": "incomplete required data"}))
 
@@ -213,20 +216,24 @@ def update_members(req):
     if not discussion.exists():
         return Response(generate_res(err={"msg": "discussion does not exists"}))
     discussion = discussion[0]
-
+    c_members = list(community.members)
     d_members = list(discussion.members)
     is_d_member = user_id in discussion.members
     # validating discussion membership
-    if is_d_member:
+    if action != "DEL" and is_d_member:
         return Response(generate_res(err={"msg": "user is already a member"}))
-
+    
     # altering discussion member
     if action == "ADD":
         # if user is not a community member
         # make the user one
         if not is_c_member:
-            c_members = list(community.members)
             c_members.append(user_id)
+            # Adding user to the announcement discussion
+            announcement_discussion = Discussion.objects.get(title="Announcement", community= c_id)
+            announcement_members = list(announcement_discussion.members)
+            announcement_members.append(user_id)
+            announcement_discussion.save()
         d_members.append(user_id)
     elif action == "DEL":
         d_members.remove(user_id)
@@ -238,7 +245,7 @@ def update_members(req):
     discussion.save()
     community.save()
     state = "added" if action == "ADD" else "removed"
-    return Response(generate_res(err={"msg": f"member {state} successfully "}))
+    return Response(generate_res({"msg": f"member {state} successfully "}))
 
 
 @api_view(["GET"])

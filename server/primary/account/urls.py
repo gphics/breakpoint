@@ -7,7 +7,8 @@ from .views import (
     update_email_view,
     update_username_view,
     update_password_view,
-    clear_all
+    clear_all,
+    reset_password_viw,
 )
 
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path("email-update", update_email_view),
     path("username-update", update_username_view),
     path("password-update", update_password_view),
+    path("password-reset", reset_password_viw),
     path("basic-update", basic_update_view),
     path("clear", clear_all),
 ]

@@ -8,6 +8,6 @@ class Discussion(MetaStamps):
     description = models.TextField()
     avatar = models.CharField(max_length=50)
     community = models.ForeignKey("community.Community", on_delete=models.CASCADE)
-    members = models.JSONField(null = True)
+    members = models.JSONField(null = True, default=list)
     class Meta:
         db_table = "discussion" 

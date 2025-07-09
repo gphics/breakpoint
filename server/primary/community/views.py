@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from utils.res import generate_res
@@ -10,20 +10,55 @@ from utils.perm.comm import is_community_admin, is_community_active
 from django.contrib.auth.models import User
 from utils.ser.user import user_list_serializer
 from account.models import Profile
-
+from rest_framework.permissions import AllowAny
+from discussion.models import Discussion
 # Create your views here.
 
+
+@api_view(["GET"])
+def user_community_position(req):
+    # This view determines the position of the auth user in the community
+    community_id = req.GET.get("id", None)
+    if not community_id:
+        return Response(generate_res(err={"msg": "community id must be provided"}))
+    community = Community.objects.filter(pk=community_id)
+    if not community.exists():
+        return Response(generate_res(err={"msg": "community does not exists"}))
+    position = None 
+    is_founder = False
+    community = community[0]
+    auth_username = req.user.username
+    if community.founder.username == auth_username:
+        position = "founder"
+        is_founder = True
+    elif auth_username in community.admins and not is_founder:
+        position = "admin"
+    else:
+        position = "member"
+    return Response(generate_res({"msg":{"position":position}}))
+
+@api_view(["GET"])
+def single_community(req):
+    id = req.GET.get("id", None)
+    if not id:
+        return Response(generate_res(err={"msg":"community id must be provided"}))
+    community = Community.objects.filter(pk = id)
+    if not community.exists():
+        return Response(generate_res(err={"msg":"community does not exists"}))
+    community = community[0]
+    ser = read_community_serializer(instance = community)
+    return Response(generate_res({"msg":ser.data}))
 
 class CommunityBasicView(APIView):
 
     def get(self, req):
         # This method returns all communities the current user is either an admin or a member
-        x = Community.objects.all()
+        all_communities = Community.objects.all()
         res = []
-        for a in x:
+        for community in all_communities:
             current_user = req.user.pk
-            if current_user in a.admins or current_user in a.members:
-                res.append(a)
+            if current_user in community.admins or current_user in community.members:
+                res.append(community)
         ser = read_community_serializer(instance=res, many=True)
         return Response(generate_res({"msg": ser.data}))
 
@@ -37,7 +72,6 @@ class CommunityBasicView(APIView):
         description = req.data.get("description", None)
 
         if not name or not description:
-
             return Response(
                 generate_res(err={"msg": "name and description must be provided"})
             )
@@ -56,19 +90,17 @@ class CommunityBasicView(APIView):
         # checking for validity
         if not ser.is_valid():
             return Response(generate_res(err={"msg": "community name not available"}))
-        # creating community
+        # saving community 
         ser.save()
+        # creating the announcement discussion
+        c = Community.objects.get(name = name)
+        Discussion.objects.create(title = "Announcement", description="Welcome to the announcement channel", community=c)
         return Response(generate_res({"msg": "community created"}))
-
-    # def delete(self, req):
-    #     Community.objects.all().delete()
-
-    #     return Response(generate_res({"msg": "community deleted"}))
 
     def delete(self, req):
         """
         * Req query_params:
-            > name (community name)
+            > id (community id)
         """
         c_id = req.GET.get("id", None)
         if not c_id:
@@ -81,7 +113,7 @@ class CommunityBasicView(APIView):
 
         # checking for permissibility
         is_superuser = req.user.is_superuser
-        is_admin = req.user.username in x[0].admins
+        is_admin = req.user.pk in x[0].admins
 
         if not is_admin and not is_superuser:
             return Response(generate_res(err={"msg": "action not permitted"}))
@@ -94,6 +126,7 @@ class CommunityBasicView(APIView):
 @api_view(["PUT"])
 def admins_update(req):
     """
+    This route is meant for permitted user only
     * Req data:
         > c_id (community id)
         > user_id (for the user to be added as admin)
@@ -108,6 +141,9 @@ def admins_update(req):
         return Response(
             generate_res(err={"msg": "user id and community name must be provided"})
         )
+    if user_id == req.user.pk:
+        action_type = "delete" if action == "DEL" else "add"
+        return Response(generate_res(err={"msg":f"You cannot {action_type} yourself"}))
     community = Community.objects.filter(pk=c_id)
     if not community.exists():
         return Response(generate_res(err={"msg": "community does not exists"}))
@@ -141,10 +177,20 @@ def admins_update(req):
         if is_already_admin:
             return Response(generate_res(err={"msg": "user is already an admin"}))
         else:
+            # updating the admin membrs
             c_admins.append(x_id)
+           
+
             # altering community members
             if is_already_member:
                 c_members.remove(x_id)
+                 # removing user from all community discussions since the user is already an admin
+                community_discussions = Discussion.objects.filter(community = c_id)
+                for discussion in community_discussions:
+                    d_members = list(discussion.members)
+                    d_members.remove(x_id)
+                    discussion.members = d_members
+                    discussion.save()
 
     else:
         if not is_already_admin:
@@ -154,6 +200,12 @@ def admins_update(req):
             # altering community members
             if not is_already_member:
                 c_members.append(x_id)
+                # Adding the user to the announcement discussion
+                announcement_discussion = Discussion.objects.get(title = "Announcement", community = c_id)
+                a_members = list( announcement_discussion.members)
+                a_members.append(x_id)
+                announcement_discussion.members = a_members
+                announcement_discussion.save()
 
     # final update
     community.admins = c_admins
@@ -166,12 +218,15 @@ def admins_update(req):
     )
 
 
+
+
 @api_view(["PUT"])
 def members_update(req):
     """
+    This route is meant for permitted user only
     * Req data:
         > c_id (community id)
-        > user_id (for the user to be added as admin)
+        > user_id (for the user to be added as member)
         > action (enum['ADD', 'DEL'])
     """
     # querying & checking for community validity
@@ -211,12 +266,16 @@ def members_update(req):
     # getting membership or admin state
     is_already_admin = x_id in c_admins
     is_already_member = x_id in c_members
+    # Adding user to the announcement discussion
+    announcement_discussion = Discussion.objects.get(community = c_id, title="Announcement")
+    a_members = announcement_discussion.members
     # main operations
     if action == "ADD":
         if is_already_member or is_already_admin:
             return Response(generate_res(err={"msg": "user is already a member"}))
         else:
             c_members.append(x_id)
+            a_members.append(user_id)
     else:
         if not is_already_member:
             return Response(
@@ -224,17 +283,26 @@ def members_update(req):
             )
         else:
             c_members.remove(x_id)
-
+            community_discussions = Discussion.objects.filter(community = c_id).exclude(title = "Announcement")
+            for discussion in community_discussions:
+                d_members = list(discussion.members)
+                d_members.remove(x_id)
+                discussion.members = d_members
+                discussion.save()
+            a_members.remove(user_id)
     community.members = c_members
     # saving the community
     community.save()
+    # saving the announcement discussion
+    announcement_discussion.members =  a_members
+    announcement_discussion.save()
     full_action_word = "added" if action == "ADD" else "deleted"
     return Response(
         generate_res({"msg": f"community member {full_action_word} successfully"})
     )
 
 
-@api_view(["PUT"])
+@api_view(["PUT"]) 
 def name_update(req):
     """
     * Req data:
@@ -257,7 +325,7 @@ def name_update(req):
     if not is_c_active:
         return Response(generate_res(err={"msg": "community is inactive"}))
     # user permission validation
-    is_permitted = is_community_admin(community, req.user.username)
+    is_permitted = is_community_admin(community, req.user.pk)
     if not is_permitted:
         return Response(generate_res(err={"msg": "permission denied"}))
     # checking name availablility
@@ -280,7 +348,7 @@ def description_update(req):
     """
     description = req.data.get("description", None)
     c_id = req.data.get("c_id", None)
-    if not description or not c_name:
+    if not description or not c_id:
         return Response(
             generate_res(err={"msg": "description and community id must be provided"})
         )
@@ -291,7 +359,9 @@ def description_update(req):
     is_c_active = is_community_active(community)
     if not is_c_active:
         return Response(generate_res(err={"msg": "community is inactive"}))
-    is_permitted = is_community_admin(community, req.user.username)
+    is_permitted = is_community_admin(community, req.user.pk)
+    print(is_permitted)
+    print(req.user.username)
     if not is_permitted:
         return Response(generate_res(err={"msg": "permission denied"}))
     community.description = description
@@ -299,15 +369,13 @@ def description_update(req):
     return Response(generate_res({"msg": "community updated successfully"}))
 
 
-@api_view(["PUT"])
+@api_view(["GET"])
 def is_active_update(req):
     """
-    * Req data:
-        > is_active
-        > c_id (community id)
+    * Req query:
+        > id (community id)
     """
-    req_is_active = req.data.get("is_active", False)
-    c_id = req.data.get("c_id", None)
+    c_id  = req.GET.get("id", None)
 
     if not c_id:
         return Response(generate_res(er={"msg": "community name must be provided"}))
@@ -315,13 +383,15 @@ def is_active_update(req):
     if not community.exists():
         return Response(generate_res(err={"msg": "community does not exists"}))
     community = community[0]
-    community.is_active = req_is_active
+    is_active= not community.is_active
+    community.is_active = is_active
     community.save()
-    state = "deactivated" if not req_is_active else "activated"
+    state = "deactivated" if not is_active else "activated"
     return Response(generate_res({"msg": f"community {state} "}))
 
 
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def community_admins_list(req):
     # list all community admins
     # this view works even if community is inactive
@@ -346,6 +416,7 @@ def community_admins_list(req):
 
 
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def community_members_list(req):
     # list all community members
     # this view works even if community is inactive
@@ -367,3 +438,43 @@ def community_members_list(req):
         user_profiles.append(y)
     ser = user_list_serializer(instance=user_profiles, many=True)
     return Response(generate_res({"msg": ser.data}))
+
+
+@api_view(["PUT"])
+def leave_community(req):
+    """
+    Data: 
+        - c_id (community id)
+        - status (admin | member)
+    This route is meant for community members and admins to leave the community
+    """
+    c_id = req.data.get("c_id", None)
+    status = req.data.get("status", "member")
+    user_id = req.user.pk
+    if not c_id:
+        return Response(generate_res(err={"msg":"community does not exists"}))
+    community = Community.objects.filter(id = c_id)
+    if not community.exists():
+        return Response(generate_res(err={"msg":"community does not exists"}))
+    community = community[0]
+    is_founder = user_id == community.founder.pk
+    if status == "admin":
+        if is_founder:
+            return Response(generate_res(err={"msg":"You can only delete the community"}))
+        admin_list = list(community.admins)
+        admin_list.remove(user_id)
+        community.admins = admin_list
+    else:
+        member_list = list(community.members)
+        member_list.remove(user_id)
+        community.members = member_list
+
+    # Removing user from all community discussions
+    community_discussions = Discussion.objects.filter(community = c_id)
+    for community_discussion in community_discussions:
+        c_members = list(community_discussion.members)
+        c_members.remove(user_id)
+        community_discussion.members = c_members
+        community.save()
+    community.save()
+    return Response(generate_res({"msg":f"You left {community.name} community"}))

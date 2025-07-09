@@ -1,0 +1,9 @@
+@use "../component/user-components";
+@use "../support/color" as c;
+
+
+.user-page{
+    display: flex;
+    flex-direction: column;
+   
+}

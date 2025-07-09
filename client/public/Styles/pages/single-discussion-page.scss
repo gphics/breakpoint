@@ -1,0 +1,59 @@
+@use "../support/color" as c;
+
+.single-discussion {
+    padding-top: 5px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 40px);
+    justify-content: space-between;
+
+    .comment-create-component {
+        align-self: center;
+        width: 90%;
+        max-width: 600px;
+
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 5px;
+
+        textarea {
+            width: 80%;
+            max-height: 20vh;
+            height: auto;
+            flex: 1 1 auto;
+            resize: none;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            padding: 5px;
+            color: c.$white;
+            background-color: c.$tertiary-color;
+
+            &:hover,
+            &:focus {
+                font-weight: 700;
+            }
+        }
+
+        .icon {
+            transform: scale(1.7);
+            margin: 0px 2%;
+            color: c.$tertiary-color;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 10px;
+            background-color: c.$tertiary-color;
+            border-radius: 5px;
+            outline: none;
+            border: none;
+            cursor: pointer;
+
+            .icon {
+                color: c.$white;
+            }
+        }
+    }
+}

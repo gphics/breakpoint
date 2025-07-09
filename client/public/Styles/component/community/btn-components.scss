@@ -1,0 +1,35 @@
+@use "../../support/color" as c;
+@use "../btn-component" as b;
+
+.community-btn-component {
+    margin: 5px 0px;
+    display: flex;
+    width: 98%;
+    max-width: 400px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    button {
+        margin: 5px;
+
+        @include b.btn-mixin {
+            &:hover {
+                transform: scale(1.01);
+                border: none;
+                color: c.$secondary-color
+            }
+        }
+    }
+
+    .is-active {
+        background-color: c.$primary-color;
+    }
+
+    .leave {
+        background: orangered;
+    }
+
+    .delete {
+        background: red;
+    }
+}

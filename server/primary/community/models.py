@@ -9,9 +9,9 @@ class Community(MetaStamps):
 
     name = models.CharField(max_length=40)
     founder = models.ForeignKey(User, on_delete=models.CASCADE)
-    members = models.JSONField(null=True)
+    members = models.JSONField(null=True, default=list)
     avatar = models.CharField(max_length=50)
-    admins = models.JSONField(null=True)
+    admins = models.JSONField(null=True, default=list)
     description = models.TextField()
     is_active = models.BooleanField(default=True)
 

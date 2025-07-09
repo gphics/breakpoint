@@ -1,0 +1,179 @@
+@use "../support/color" as c;
+@use "../component/btn-component" as b;
+@use "../component/community/btn-components.scss";
+@use "../component/community/member-component.scss";
+@use "../component/community/update-form-component.scss";
+.single-commmunity-page {
+
+    .community-detail-component {
+        display: flex;
+        flex-direction: column;
+
+        header {
+            display: flex;
+            flex-direction: column;
+            margin: 5px 0px;
+
+            .advance {
+
+                .edit-icon {
+                    margin-bottom: 5px;
+                    color: c.$white;
+                    cursor: pointer;
+                }
+            }
+
+            .holder {
+                display: flex;
+                flex-direction: column;
+                margin: 5px 0px;
+                width: 98%;
+
+                .edit-icon {
+                    color: c.$tertiary-color;
+                    cursor: pointer;
+                    transform: scale(1.2);
+                    margin: 5px;
+                }
+            }
+
+            .name-holder,
+            .description-holder {
+                @extend .holder;
+
+                p {
+                    font-size: .9em;
+                    margin: 5px 0;
+                }
+            }
+
+
+            a {
+                color: c.$secondary-color;
+                font-size: .9em;
+                font-weight: bold;
+                margin: 5px 0;
+                text-decoration: underline;
+                width: max-content
+            }
+
+            small {
+                margin: 2px 0;
+            }
+        }
+
+      
+    }
+        .add-member-component {
+            display: flex;
+            flex-direction: column;
+    
+            .intro {
+                margin: 5px 0px;
+                width: 90%;
+                max-width: 400px;
+                height: 30px;
+                justify-content: space-between;
+                display: flex;
+                align-items: center;
+    
+                h4 {
+                    font-size: .9em;
+                }
+    
+                button {
+                    color: c.$white;
+                    background-color: c.$tertiary-color;
+                    outline: none;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 8px 10px;
+    
+                    &:hover {
+                        transform: scale(1.01);
+                        border: none;
+                        color: c.$secondary-color
+                    }
+                }
+            }
+    
+            form {
+                position: absolute;
+                z-index: 999;
+                top: 0;
+                left: 0;
+                background-color: c.$overlay-color;
+                display: flex;
+                width: 100vw;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+    
+                main {
+                    display: flex;
+                    padding-top: 5px;
+                    flex-direction: column;
+                    align-items: center;
+                    // justify-content: center;
+                    width: 90%;
+                    max-width: 600px;
+                    height: 90%;
+                    background-color: c.$primary-color;
+                    box-shadow: c.$shadow;
+    
+                    .search-result {
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+    
+                        section {
+                            margin: 10px 0;
+                            width: 40%;
+                            max-width: 200px;
+                            display: flex;
+                            align-items: center;
+                            background-color: c.$white;
+    
+                            img {
+                                width: 50px;
+                                height: 50px;
+                            }
+                        }
+    
+                    }
+    
+                    input {
+                        width: 50%;
+                        max-width: 300px;
+                        height: 40px;
+                        text-indent: 10px;
+                        border-radius: 5px;
+                        outline: none;
+                        border: none;
+                    }
+    
+                    label {
+                        width: 50%;
+                        max-width: 300px;
+                        color: c.$white;
+                        font-family: ubuntu-medium;
+                        margin: 2px 0;
+                    }
+    
+                    select {
+                        width: 50%;
+                        max-width: 300px;
+                        height: 40px;
+                        outline: none;
+                        padding: 5px;
+                    }
+    
+                    button {
+                        margin-top: 10px;
+                        @include b.btn-mixin()
+                    }
+                }
+            }
+        }
+}

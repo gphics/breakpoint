@@ -1,0 +1,21 @@
+@use "./pages";
+@use "./component/loading-component";
+@use "./component/topbar";
+@use "./component/sidebar";
+@use "./support/fonts";
+@use "./support/supporting-classes";
+@use "./component/input-component";
+// Basic document style
+*{
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+    transition: all .2s;
+    font-family: ubuntu-light;
+}
+body{
+    overflow-x: hidden;
+}
+a{
+    text-decoration: none;
+}

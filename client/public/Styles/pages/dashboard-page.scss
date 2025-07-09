@@ -1,0 +1,155 @@
+@use "../support/color" as c;
+@use "../component/btn-component" as b;
+
+.dashboard-page {
+    display: flex;
+    flex-direction: column;
+
+    header {
+        display: inherit;
+        justify-content: space-around;
+        align-items: center;
+        width: 95%;
+        margin: 5px auto;
+
+        button {
+            background-color: c.$primary-color;
+            color: c.$white;
+            outline: none;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+
+            &:hover {
+                background-color: c.$tertiary-color;
+            }
+        }
+    }
+
+    .community-create-component {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: c.$overlay-color;
+
+        form {
+            width: 95%;
+            background-color: c.$primary-color;
+            max-width: 600px;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            div {
+                display: flex;
+                flex-direction: column;
+                width: 98%;
+                max-width: 400px;
+
+                label {
+                    margin: 5px 0px;
+                    color: c.$white;
+
+                }
+
+                input,
+                textarea {
+                    margin: 5px 0px;
+                    width: 100%;
+                    outline: none;
+                    border: none;
+                    height: 35px;
+                    text-indent: 5px;
+                    border-radius: 5px;
+
+                    &:hover,
+                    &:focus {
+                        font-family: ubuntu-medium;
+                    }
+                }
+
+                textarea {
+                    height: 100px;
+                    padding-top: 5px;
+                }
+            }
+
+            button {
+                @include b.btn-mixin() {
+                    margin-top: 5px;
+
+                    &:hover {
+                        border: none;
+                        transform: scale(1.02);
+                    }
+                }
+            }
+        }
+    }
+
+    .community-list-component {
+        display: flex;
+        flex-direction: column;
+
+        h3 {
+            text-align: center;
+            color: c.$primary-color;
+            width: 90%;
+            margin: 10px auto;
+            font-family: ubuntu-bold;
+        }
+
+
+        .each-community {
+            color: c.$secondary-color;
+            display: flex;
+            flex-direction: column;
+            margin: 10px auto;
+            width: 95%;
+            padding-top: 5px;
+            background-color: c.$white;
+            box-shadow: c.$shadow;
+            border-radius: 5px;
+            border-left: 3px solid c.$primary-color;
+
+
+
+            p {
+                margin-top: 5px;
+                font-size: .9em;
+                padding-left: 5px;
+            }
+
+            h4 {
+                padding-left: 5px;
+                margin-top: 5px;
+            }
+
+            small {
+                margin-top: 5px;
+                background-color: c.$primary-color;
+                width: max-content;
+                text-transform: capitalize;
+                padding: 2px 5px;
+                color: c.$white;
+                font-family: ubuntu-medium;
+                align-self: flex-end;
+                border-bottom-right-radius: 3px;
+
+            }
+
+            &:hover,
+            &:visited {
+                border-bottom: 3px solid c.$primary-color;
+            }
+        }
+    }
+}

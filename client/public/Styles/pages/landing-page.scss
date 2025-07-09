@@ -1,0 +1,76 @@
+@use "../support/color" as c;
+@use "../support/fonts";
+@use "../component/btn-component" as btn;
+
+.landing-page {
+    display: flex;
+    width: 100vw;
+    align-items: center;
+    justify-content: space-between;
+    height: 70vh;
+    // overflow: hidden;
+
+    .first {
+        width: 48%;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+
+        h3 {
+            font-family: ubuntu-bold;
+            font-size: 1.3em;
+            margin: 5px 0px;
+            text-decoration: underline;
+        }
+
+        p {
+            margin: 10px 0px;
+        }
+
+        a {
+            @include btn.btn-mixin(){
+               
+            };
+
+        }
+    }
+
+    .second {
+        width: 48%;
+        // padding: 0px 5px;
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+        // background-color: red;
+
+        img {
+            max-height: 350px;
+            max-width: 350px;
+            margin: 10px auto;
+
+        }
+    }
+
+    @media (width <=700px) {
+        & {
+            flex-direction: column;
+            height: auto;
+        }
+
+        .first,
+        .second {
+            width: 98%;
+            margin-bottom: 5px;
+        }
+
+        .second {
+            max-height: 300px;
+
+            img {
+                max-height: 300px;
+                max-width: 300px;
+            }
+
+        }
+    }
+}

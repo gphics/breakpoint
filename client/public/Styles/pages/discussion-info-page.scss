@@ -1,0 +1,203 @@
+@use "../support/color" as c;
+@use "../component/btn-component" as b;
+
+.discussion-info {
+    padding-left: 5px;
+    display: flex;
+    flex-direction: column;
+
+    .edit-icon {
+        color: c.$primary-color;
+        transform: scale(1.2);
+
+
+        &:hover {
+            color: c.$tertiary-color;
+        }
+    }
+    .del-btn{
+        @include b.btn-mixin(){
+            margin-top: 10px;
+            margin-left: 0px;
+            background-color: red;
+        }
+    }
+    .avatar-holder {
+
+        margin: 5px auto;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .avatar-rep-holder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 85%;
+            height: 85%;
+            margin-bottom: 5px;
+            background-color: c.$primary-color;
+            border-radius: 100%;
+
+            &:hover {
+                background: c.$tertiary-color;
+            }
+
+            h4 {
+                color: c.$white;
+                font-family: ubuntu-bold;
+            }
+        }
+    }
+
+    .title-holder,
+    .description-holder {
+        margin: 5px 0;
+        display: flex;
+        flex-direction: column;
+        width: max-content;
+
+        h4,
+        p {
+            margin: 5px 0;
+        }
+    }
+
+    form {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: c.$overlay-color;
+        display: flex;
+
+        main {
+            height: 90%;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: c.$shadow;
+            background-color: c.$primary-color;
+            margin: auto;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            label {
+                color: c.$white;
+                margin: 5px 0;
+                width: 80%;
+                max-width: 300px;
+                font-family: ubuntu-medium;
+            }
+
+            input,
+            textarea {
+                margin: 5px 0;
+                width: 80%;
+                max-width: 300px;
+                height: 40px;
+                outline: none;
+                border: none;
+                text-indent: 5px;
+                border-radius: 5px;
+                font-family: ubuntu-medium;
+
+                &:hover,
+                &:focus {
+                    background-color: c.$tertiary-color;
+                    color: c.$white;
+                }
+            }
+
+            textarea {
+                height: 100px;
+            }
+
+            button {
+                @include b.btn-mixin();
+                margin: 5px 0;
+            }
+        }
+    }
+
+
+    .search-result-holder {
+        display: flex;
+        flex-direction: column;
+
+        section {
+            display: flex;
+            width: 200px;
+            margin: 5px 0px;
+            color: c.$white;
+            height: 60px;
+            align-items: center;
+            background-color: c.$tertiary-color;
+
+            img {
+                width: 50px;
+                height: 50px;
+                margin-right: 5px;
+            }
+        }
+    }
+}
+
+
+.discussion-member-component {
+    margin: 5px 0px;
+
+    header {
+        margin: 5px 0px;
+        width: 90%;
+        max-width: 400px;
+        justify-content: space-between;
+        align-items: center;
+        display: flex;
+
+        button {
+            @include b.btn-mixin() {
+                padding: 10px 15px;
+            }
+        }
+    }
+
+    .members-list {
+        margin: 5px 0px;
+        width: 90%;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+
+        .each-member {
+            margin: 10px 0px;
+            display: flex;
+            flex-direction: column;
+
+            a {
+                display: flex;
+                align-items: center;
+                color:c.$secondary-color;
+                margin-right: 5px;
+                img {
+                    height: 50px;
+                    width: 50px;
+                }
+            }
+
+            button {
+                @include b.btn-mixin() {
+                    margin-top: 10px;
+                    background-color: orangered;
+                }
+            }
+        }
+    }
+}
