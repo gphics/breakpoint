@@ -1,0 +1,45 @@
+@use "../support/color" as c;
+
+.topbar {
+
+    display: flex;
+    height: 50px;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    align-items: center;
+
+    .home {
+        margin-right: 2%;
+
+        img {
+            height: 40px;
+            width: max-content;
+        }
+    }
+
+    .link-holder {
+        display: flex;
+        flex: 1 1 auto;
+        justify-content: flex-end;
+
+
+        .active {
+            background: c.$primary-color;
+            color: c.$white;
+
+        }
+
+        a {
+            margin: 0px 10%;
+            color: c.$secondary-color;
+            padding: 5px 10px;
+
+            &:hover {
+                @extend .active;
+            }
+
+        }
+
+
+    }
+}

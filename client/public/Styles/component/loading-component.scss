@@ -1,0 +1,47 @@
+@use "../support/color" as c;
+
+.loading-component {
+    position: absolute;
+    top: 0;
+    background-color: c.$overlay-color;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+
+.static-box {
+    width: 30px;
+    height: 30px;
+    background-color: c.$primary-color;
+    border-radius: 100%;
+}
+
+.loading-component section {
+    background-color: rgba(128, 0, 128, 0);
+    width: 100px;
+    height: 100px;
+    position: inherit;
+    border-radius: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: rotate-s 1s linear infinite;
+
+    @keyframes rotate-s {
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+}
+
+.box {
+    width: 15px;
+    height: 15px;
+    background-color: c.$primary-color;
+    border-radius: 100%;
+}

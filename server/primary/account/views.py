@@ -72,13 +72,19 @@ class UserRegisterView(APIView):
             return Response(generate_res(err={"msg": "username already exists"}))
 
 
+
 class ProfileListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, req):
         # getting username query params
         username = req.GET.get("username", None)
+        # if the result should be the profile data of the authenticated user
+        if req.auth and not username:
+            username = req.user.username
+
         # querying the db if the username q_prams exist
+  
         if username:
             first = User.objects.filter(username__icontains=username)
             if not first.exists():
@@ -94,6 +100,13 @@ class ProfileListView(APIView):
         ser = user_list_serializer(instance=profile_objs, many=True)
         return Response(generate_res({"msg": ser.data}))
 
+
+# @api_view(["GET"])
+# @permission_classes([AllowAny])
+# def get_user(req):
+#     id = req.GET.get("id", None)
+#     if not id:
+#         return Response(generate_res(err={"msg":"user id must be provided"}))
 
 # login view
 @api_view(["POST"])
@@ -194,6 +207,14 @@ def update_password_view(req):
     user.set_password(new_password)
     user.save()
     return Response(generate_res({"msg": "password update successful"}))
+
+
+@api_view(["GET"])
+def reset_password_viw(req):
+    user = User.objects.get(username=req.user)
+    new_password = 123456
+    user.set_password(new_password)
+    return Response(generate_res({"msg": {"new_password": new_password}}))
 
 
 @api_view(["DELETE"])

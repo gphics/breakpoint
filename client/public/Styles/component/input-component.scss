@@ -1,0 +1,56 @@
+@use "../support/color" as c;
+
+.advance-input-component {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    margin: 10px 5px;
+    align-items: center;
+    label {
+        margin: 5px 0px;
+        text-transform: capitalize;
+        font-family: ubuntu-bold;
+        color: c.$white;
+
+        width:90%;
+        max-width: 350px;
+    }
+
+    section {
+        background-color: c.$white;
+        width: 90%;
+        max-width: 350px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 40px;
+        border-radius: 5px;
+
+        input {
+            height: 100%;
+            background: none;
+            outline: none;
+            border: none;
+            width: 90%;
+            text-indent: 10px;
+            font-size: 1.1em;
+
+            &:hover,
+            &:active {
+                border-right: 2px solid c.$primary-color;
+            }
+        }
+
+        .input-icon {
+            margin: 0px auto;
+            transform: scale(1.5);
+            color: c.$primary-color;
+        }
+    }
+}
+
+.basic-input-holder{
+    @extend .advance-input-component;
+}

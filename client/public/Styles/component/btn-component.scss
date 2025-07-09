@@ -1,0 +1,18 @@
+@use "../support/color" as c;
+
+@mixin btn-mixin {
+    cursor: pointer;
+    width: max-content;
+    color: c.$white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    outline: 0px;
+    border: none;
+    font-family: ubuntu-medium;
+    background: c.$tertiary-color;
+    &:hover { 
+        transform: translateX(2px)
+    }
+
+    @content;
+}

@@ -1,0 +1,27 @@
+@use "../support/color" as c;
+
+.not-found {
+    display: flex;
+    background-color: c.$primary-color;
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    color: c.$white;
+    flex-direction: column;
+    position: absolute;
+    top:0;
+    a {
+        background-color: c.$tertiary-color;
+        text-decoration: none;
+        color: inherit;
+        margin: 10px auto;
+        padding: 5px 10px;
+        border-radius: 5px;
+
+        &:hover {
+            background-color: c.$secondary-color;
+            transform: scale(1.03);
+        }
+    }
+}

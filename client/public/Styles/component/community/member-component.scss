@@ -1,0 +1,60 @@
+@use "../../support/color" as c;
+@use "../btn-component" as b;
+
+.community-admins-component {
+    display: flex;
+    flex-direction: column;
+
+    .hr {
+        width: 98%;
+        max-width: 400px;
+    }
+
+    .each-member {
+        width: 98%;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        margin: 5px 0px;
+
+        a {
+            padding: 5px;
+            border-radius: 2px;
+            background-color: c.$tertiary-color;
+            color: c.$white;
+
+            display: flex;
+            align-items: center;
+
+            .info {
+                margin-left: 5%;
+            }
+
+            .rep-user-icon {
+                width: 50px;
+                height: 50px;
+                color: c.$primary-color
+            }
+
+            small {
+                justify-self: flex-end;
+            }
+        }
+
+        button {
+            width: max-content;
+            padding: 5px 10px;
+            background-color: orangered;
+            font-family: ubuntu-bold;
+            outline: none;
+            border: none;
+            color: c.$white;
+            margin: 5px 0px;
+            align-self: flex-end
+        }
+    }
+}
+
+.community-members-component {
+    @extend .community-admins-component;
+}

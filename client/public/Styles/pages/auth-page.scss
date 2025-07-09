@@ -1,0 +1,70 @@
+@use "../support/color.scss" as c;
+@use "../component/btn-component.scss" as btn;
+
+.auth-page {
+    display: flex;
+    width: 100vw;
+    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+
+    .img-holder {
+        width: 48%;
+
+        padding-left: 5px;
+
+        img {
+            width: 80%;
+            max-width: 350px;
+        }
+
+        @media (width <=700px) {
+            display: none;
+        }
+    }
+
+    form {
+        width: 49%;
+        background-color: c.$primary-color;
+        max-width: 400px;
+        border-radius: 5px;
+        margin: 5px 10px;
+        height: 440px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        align-self: center;
+
+        
+        button {
+           
+            @include btn.btn-mixin() 
+        }
+
+        p {
+            font-size: .9em;
+            color: c.$white;
+            a {
+                color: c.$tertiary-color;
+                text-decoration: underline;
+                font-weight: 900;
+            }
+        }
+        @media (width <=700px) {
+            & {
+                flex: 1 1 auto;
+                margin: 0px auto;
+                height: 85%;
+
+            }
+        }
+    }
+
+    @media (width <=700px) {
+        & {
+            height: calc(100vh - 55px);
+            background-color: c.$overlay-color;
+        }
+    }
+}
