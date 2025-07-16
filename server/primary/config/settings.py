@@ -60,7 +60,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-CORS_ALLOW_ALL_ORIGINS = debug_bool
+# CORS_ALLOW_ALL_ORIGINS = debug_bool
 CORS_ALLOWED_ORIGINS=[
     "http://localhost:3000", 
     os.getenv("allowed_host")
