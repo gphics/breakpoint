@@ -63,7 +63,7 @@ MIDDLEWARE = [
 # CORS_ALLOW_ALL_ORIGINS = debug_bool
 CORS_ALLOWED_ORIGINS=[
     "http://localhost:3000", 
-    os.getenv("allowed_host")
+    os.getenv("allowed_cors_origin")
 ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
