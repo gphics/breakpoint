@@ -30,6 +30,7 @@ function RegisterComponent({ updateIsLoading }) {
                 router.push("/dashboard")
             }
         } catch (error) {
+            console.log(error)
             updateIsLoading(false)
             toast.error(error.message)
         }
@@ -45,7 +46,7 @@ function RegisterComponent({ updateIsLoading }) {
             formSubmit()
         }}>
             {inputArr.map((elem, index) => <BasicInputComponent key={index} {...elem} />)}
-            <PasswordInputComponent name="password" inputClass="password-input"/>
+            <PasswordInputComponent name="password" inputClass="password-input" />
             <button type="submit">Register</button>
             <p>Already have an account ? <Link href="/auth/log">sign in</Link></p>
         </form>
