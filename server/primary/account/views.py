@@ -79,12 +79,21 @@ class ProfileListView(APIView):
     def get(self, req):
         # getting username query params
         username = req.GET.get("username", None)
+        user_id = req.GET.get("id", None)
         # if the result should be the profile data of the authenticated user
         if req.auth and not username:
             username = req.user.username
 
+        # querying the db if the id q_prams exist
+        if user_id:
+            first = Profile.objects.filter(user = user_id)
+            if not first.exists():
+                return Response(generate_res(err={"msg": "user does not exist"}))
+            first = first[0]
+            ser = user_list_serializer(instance = first)
+            return Response(generate_res({"msg":ser.data}))
         # querying the db if the username q_prams exist
-  
+
         if username:
             first = User.objects.filter(username__icontains=username)
             if not first.exists():

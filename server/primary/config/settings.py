@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,13 +27,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("project_secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("debug")
+debug_var = os.getenv("debug")
+debug_bool = False  if debug_var == "false" else True
+DEBUG = debug_bool
 
 ALLOWED_HOSTS = []
 
 
 # Application definition
 default_apps = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -80,26 +84,34 @@ TEMPLATES = [
         },
     },
 ]
-
+ 
 WSGI_APPLICATION = "config.wsgi.application"
-
+ASGI_APPLICATION = "config.asgi.application"
+CHANNEL_LAYERS = {
+    "default":{
+        "BACKEND":"channels.layers.InMemoryChannelLayer",
+        # 'CONFIG': {
+        #     "hosts": [('127.0.0.1', 6379)], # Or your Redis host/port
+        # },
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    "default": {
+local_db=  {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("db_name"),
         "USER": os.getenv("db_user"),
         "HOST": os.getenv("db_host"),
         "PASSWORD": os.getenv("db_password"),
     }
-    # "default": {
-    #     "ENGINE": "django.db.backends.sqlite3",
-    #     "NAME": BASE_DIR / "db.sqlite3",
-    # }
+
+deployment_db = {
+    "default":dj_database_url.config(default = os.getenv("db_url"),conn_max_age=600)
 }
+DATABASES = deployment_db
+# DATABASES = local_db if debug_bool else deployment_db
+
 
 
 # Password validation

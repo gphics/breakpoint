@@ -46,7 +46,7 @@ function DiscussionMemberComponent({ isAdmin, authToken, discussionId, members, 
   async function searchOnChangeHandler(e) {
     const value = e.target.value
     setSearchValue(value)
-    const api = `${process.env.NEXT_PUBLIC_SERVER_URL}/account/profile?username=${value}`
+    const api = `${process.env.NEXT_PUBLIC_SERVER_URL}account/profile?username=${value}`
     const loader = toast.loading("Loading ...")
     try {
       const first = await fetch(api)

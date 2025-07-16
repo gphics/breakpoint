@@ -13,7 +13,7 @@ function Sidebar() {
   const linkArr = [
     { Icon: MdOutlineArrowBack, url: "#", action: () => router.back() , title:"Back"},
     { Icon: FaHome, url: "/dashboard" , title:"Dashboard" },
-    { Icon: FaMessage, url: "/dashboard/dm" , title:"DM" },
+    // { Icon: FaMessage, url: "/dashboard/dm" , title:"DM" },
     { Icon: FaUser, url: "/dashboard/user" , title:"User" },
     {
       Icon: FaPowerOff, url: "#",  title: "Logout", action: () => {
