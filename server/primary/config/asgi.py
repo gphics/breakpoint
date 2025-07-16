@@ -16,7 +16,7 @@ from supports.routing import websocket_url_patterns
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 http_asgi_app = get_asgi_application()
-# application = ProtocolTypeRouter(
+# application = ProtocolTypeRouter(``
 #     {
 #         "http":http_asgi_app,
 #         "webscoket":
