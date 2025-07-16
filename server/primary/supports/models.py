@@ -19,9 +19,9 @@ class Comment(MetaStamps):
     content = models.TextField()
     media = models.JSONField(blank=True, null = True)
     discussion = models.ForeignKey("discussion.Discussion", on_delete=models.CASCADE)
-    has_threads = models.BooleanField(default = False)
-    threads = models.JSONField(null = True)
-    is_sub = models.BooleanField(default = False)
+    # has_threads = models.BooleanField(default = False)
+    # threads = models.JSONField(default = list)
+    # is_sub = models.BooleanField(default = False)
     class Meta:
         db_table = "comments"
 

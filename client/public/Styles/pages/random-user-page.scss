@@ -1,0 +1,19 @@
+@use "../support/color" as c;
+
+.random-user-page {
+    display: flex;
+    flex-direction: column;
+    padding-left: 5px;
+
+    .user-info,
+    .location-info {
+        display: flex;
+        flex-direction: column;
+        margin: 5px 0px;
+
+        h4,
+        h5 {
+            margin: 5px 0px;
+        }
+    }
+}

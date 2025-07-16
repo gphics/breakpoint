@@ -7,6 +7,87 @@
     height: calc(100vh - 40px);
     justify-content: space-between;
 
+    header {
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        a {
+            margin-left: 10px;
+            color: c.$primary-color;
+            font-size: 1.5em;
+
+            &:hover {
+                transform: scale(1.005);
+            }
+        }
+    }
+
+    .empty-discussion {
+        font-family: ubuntu-medium;
+        align-self: center;
+        justify-self: center;
+        margin: auto;
+    }
+
+    .all-comments {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        // padding-left: 5px;
+
+        .comment {
+            display: flex;
+            flex-direction: column;
+            width: max-content;
+            max-width: 400px;
+            margin-bottom: 10px;
+            margin-left: 2vw;
+            color: c.$white;
+
+
+            a {
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+                background-color: c.$tertiary-color;
+                width: max-content;
+                padding: 0px 10px;
+                font-size: .9em;
+                color: c.$secondary-color;
+                font-family: ubuntu-medium;
+
+            }
+
+            p {
+                font-family: ubuntu-medium;
+                padding: 5px;
+                font-size: .9em;
+                background-color: c.$primary-color;
+                word-wrap: break-word;
+            }
+
+            small {
+                font-size: .8em;
+                color: c.$secondary-color;
+                font-family: ubuntu-medium;
+                background-color: c.$tertiary-color;
+                width: max-content;
+                padding: 2px 10px;
+                border-bottom-left-radius: 3px;
+                border-bottom-right-radius: 3px;
+            }
+        }
+
+        .mine {
+            align-self: flex-end;
+            margin-right: 2vw;
+            margin-left: 0px;
+        }
+    }
+
     .comment-create-component {
         align-self: center;
         width: 90%;
@@ -15,11 +96,11 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
-        margin-bottom: 5px;
+        margin: 5px 0px;
 
         textarea {
             width: 80%;
-            max-height: 20vh;
+            max-height: 8vh;
             height: auto;
             flex: 1 1 auto;
             resize: none;
@@ -50,6 +131,7 @@
             outline: none;
             border: none;
             cursor: pointer;
+            margin-left: 10px;
 
             .icon {
                 color: c.$white;

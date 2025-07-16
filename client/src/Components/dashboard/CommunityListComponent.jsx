@@ -5,7 +5,7 @@ import { toast } from "react-toastify"
 import { GrGroup } from "react-icons/gr";
 
 function CommunityListComponent({ setIsLoading }) {
-  const api = `${process.env.NEXT_PUBLIC_SERVER_URL}/community/`
+  const api = `${process.env.NEXT_PUBLIC_SERVER_URL}community/`
   const [myCommunities, setMyCommunities] = useState(null)
   const authToken = new AuthStorage().getAuth()
   async function fetchMyCommunities() {

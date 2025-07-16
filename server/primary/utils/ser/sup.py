@@ -18,6 +18,7 @@ class comment_read_serializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = "__all__"
+        depth = 2
 
 
 # class thread_read_serializer(serializers.ModelSerializer):
