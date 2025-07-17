@@ -15,6 +15,100 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 
+
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
+LOGGING = {
+    'version': 1, # The version of the logging configuration schema.
+    'disable_existing_loggers': False, # Keep existing loggers enabled.
+
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+        'standard': {
+            'format': '[{levelname}] {asctime} {module}.{funcName}:{lineno} - {message}',
+            'style': '{',
+        },
+    },
+
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'level': 'INFO', # Log INFO and above to console
+            'filters': ['require_debug_true'], # Only show on console when DEBUG is True
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file_info': {
+            'level': 'INFO', # Log INFO and above to info.log
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'info.log'),
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5, # Keep 5 backup logs
+            'formatter': 'standard',
+            'filters': ['require_debug_false'], # Only log to file when DEBUG is False
+        },
+        'file_error': {
+            'level': 'ERROR', # Log ERROR and above to error.log
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'error.log'),
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5, # Keep 5 backup logs
+            'formatter': 'verbose',
+            'filters': ['require_debug_false'], # Only log to file when DEBUG is False
+        },
+        'mail_admins': {
+            'level': 'ERROR', # Email admins on ERROR and above
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': ['require_debug_false'], # Only email when DEBUG is False
+        },
+    },
+
+    'loggers': {
+        'django': { # The default Django logger
+            'handlers': ['console', 'file_info'],
+            'level': 'INFO',
+            'propagate': True, # Allow logs to propagate to root logger
+        },
+        'django.request': { # Logs requests, including 4xx and 5xx errors
+            'handlers': ['file_error', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False, # Don't propagate to avoid duplicate emails
+        },
+        'my_app': { # Custom logger for your application
+            'handlers': ['file_info', 'file_error'],
+            'level': 'INFO', # Set a default level for your app
+            'propagate': False, # Don't propagate to root logger if handled here
+        },
+        '': { # The root logger
+            'handlers': ['console', 'file_info', 'file_error'],
+            'level': 'WARNING', # Default level for anything not explicitly configured
+            'propagate': True,
+        },
+    },
+}
+
+
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -163,35 +257,35 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Configuring loggin
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%d/%b/%Y %H:%M:%S"
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'mysite.log',
-            'formatter': 'verbose'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers':['file'],
-            'propagate': True,
-            'level':'DEBUG',
-        },
-        'MYAPP': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-        },
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+#             'datefmt' : "%d/%b/%Y %H:%M:%S"
+#         },
+#         'simple': {
+#             'format': '%(levelname)s %(message)s'
+#         },
+#     },
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': 'mysite.log',
+#             'formatter': 'verbose'
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers':['file'],
+#             'propagate': True,
+#             'level':'DEBUG',
+#         },
+#         'MYAPP': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#         },
+#     }
+# }
