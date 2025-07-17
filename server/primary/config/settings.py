@@ -31,7 +31,7 @@ debug_var = os.getenv("debug")
 debug_bool = False  if debug_var == "false" else True
 DEBUG = debug_bool
 
-ALLOWED_HOSTS = [] if debug_bool else [
+ALLOWED_HOSTS = ["*"] if debug_bool else [
     "http://localhost:3000", 
     os.getenv("allowed_host")
 ]
@@ -104,19 +104,19 @@ CHANNEL_LAYERS = {
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-local_db=  {
+local_db=  {"default":{
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("db_name"),
         "USER": os.getenv("db_user"),
         "HOST": os.getenv("db_host"),
         "PASSWORD": os.getenv("db_password"),
-    }
+    }}
 
 deployment_db = {
     "default":dj_database_url.config(default = os.getenv("db_url"),conn_max_age=600)
 }
-DATABASES = deployment_db
-# DATABASES = local_db if debug_bool else deployment_db
+# DATABASES = deployment_db
+DATABASES = local_db if debug_bool else deployment_db
 
 
 
