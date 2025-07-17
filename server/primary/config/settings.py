@@ -73,11 +73,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-CORS_ALLOW_ALL_ORIGINS =True
-# CORS_ALLOWED_ORIGINS=[
-#     "http://localhost:3000","localhost" ,
-#     os.getenv("allowed_cors_origin")
-# ]
+# CORS_ALLOW_ALL_ORIGINS =True
+CORS_ALLOWED_ORIGINS=[
+    "http://localhost:3000","localhost" ,
+    os.getenv("allowed_cors_origin")
+]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication"
