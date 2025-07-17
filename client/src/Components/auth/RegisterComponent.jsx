@@ -20,7 +20,7 @@ function RegisterComponent({ updateIsLoading }) {
         console.log(email)
         console.log(password)
         try {
-            const api = process.env.NEXT_PUBLIC_SERVER_URL + "account/reg"
+            const api = process.env.NEXT_PUBLIC_SERVER_URL + "account/reg/"
             const first = await fetch(api, { method: "POST", body: JSON.stringify({ username, email, password }), headers: { "Content-Type": "application/json" } })
             if (!first.ok) {
                 console.log(first.statusText)
