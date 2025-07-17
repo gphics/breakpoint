@@ -17,10 +17,9 @@ function RegisterComponent({ updateIsLoading }) {
         const email = document.querySelector(".email-input").value
         const password = document.querySelector(".password-input").value
         try {
-            const api = process.env.NEXT_PUBLIC_SERVER_URL + "account/reg/"
+            const api = process.env.NEXT_PUBLIC_SERVER_URL + "account/reg"
             const first = await fetch(api, { method: "POST", body: JSON.stringify({ username, email, password }), headers: { "Content-Type": "application/json" } })
             const second = await first.json()
-            console.log(second)
             updateIsLoading(false)
             const { err, data } = second
             if (err) {
