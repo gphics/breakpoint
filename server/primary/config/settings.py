@@ -42,7 +42,8 @@ debug_var = os.getenv("debug")
 debug_bool = False  if debug_var == "false" else True
 DEBUG = debug_bool
 
-ALLOWED_HOSTS =  [ os.getenv("allowed_host")]
+# ALLOWED_HOSTS =  ["https://breakpoint-qoxn.onrender.com"]
+ALLOWED_HOSTS =  [os.getenv("allowed_host")]
 # ALLOWED_HOSTS = []
 # ALLOWED_HOSTS = [] if debug_bool else [
 #     os.getenv("allowed_host")
@@ -72,11 +73,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-# CORS_ALLOW_ALL_ORIGINS = debug_bool
-CORS_ALLOWED_ORIGINS=[
-    "http://localhost:3000", 
-    os.getenv("allowed_cors_origin")
-]
+CORS_ALLOW_ALL_ORIGINS =True
+# CORS_ALLOWED_ORIGINS=[
+#     "http://localhost:3000","localhost" ,
+#     os.getenv("allowed_cors_origin")
+# ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication"
