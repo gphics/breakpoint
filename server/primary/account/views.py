@@ -31,11 +31,11 @@ class UserRegisterView(APIView):
         req_email = req.data.get("email", None)
         req_username = req.data.get("username", None)
         if not req_email:
-            return Response(generate_res(err={"msg": "email must be provided"}), content_type="application/json")
+            return Response(generate_res(err={"msg": "email must be provided"}))
         if not req_username:
-            return Response(generate_res(err={"msg": "username must be provided"}), content_type="application/json")
+            return Response(generate_res(err={"msg": "username must be provided"}))
         if not req_password:
-            return Response(generate_res(err={"msg": "password must be provided"}), content_type="application/json")
+            return Response(generate_res(err={"msg": "password must be provided"}))
         try:
             # initiating the serializer
             ser = user_reg_serializer(data=req.data)
@@ -45,11 +45,11 @@ class UserRegisterView(APIView):
                 err = {"msg": None}
                 if email_err:
                     err["msg"] = "user already exists"
-                    return Response(generate_res(err=err), content_type="application/json")
+                    return Response(generate_res(err=err))
 
                 if password_err:
                     err["msg"] = "password length must be greater than 5"
-                    return Response(generate_res(err=err), content_type="application/json")
+                    return Response(generate_res(err=err))
             # creating the user
             ser.save(req.data)
 
@@ -59,17 +59,17 @@ class UserRegisterView(APIView):
             )
 
             if not auth:
-                return Response(generate_res(err={"msg": "user does not exist"}), content_type="application/json")
+                return Response(generate_res(err={"msg": "user does not exist"}))
             # creating the token obj
             token_obj = Token.objects.get_or_create(user=auth)
             token = str(token_obj[0])
 
             # creating user profile
             user_profile = Profile.objects.create(public_id=uuid(), user=auth)
-            return Response(generate_res(data={"msg": {"token": token}}), content_type="application/json")
+            return Response(generate_res(data={"msg": {"token": token}}))
         except Exception as e:
             print(e)
-            return Response(generate_res(err={"msg": "username already exists"}), content_type="application/json")
+            return Response(generate_res(err={"msg": "username already exists"}))
 
 
 
