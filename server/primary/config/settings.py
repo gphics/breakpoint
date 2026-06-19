@@ -43,12 +43,12 @@ debug_bool = False  if debug_var == "false" else True
 DEBUG = debug_bool
 
 # ALLOWED_HOSTS =  ["https://breakpoint-qoxn.onrender.com"]
-ALLOWED_HOSTS =  [os.getenv("allowed_host")]
-# ALLOWED_HOSTS = []
-# ALLOWED_HOSTS = [] if debug_bool else [
-#     os.getenv("allowed_host")
-# ]
-
+ALLOWED_HOSTS = [
+    '.onrender.com',               # Matches your app and any Render subdomains
+    '://onrender.com',  # Your exact backend domain
+    '127.0.0.1',                   # Allows Render's internal loopback proxy
+    'localhost',                   # Allows local development
+]
 
 # Application definition
 default_apps = [
@@ -63,9 +63,12 @@ default_apps = [
 third_party_apps = ["rest_framework", "rest_framework.authtoken", "corsheaders"]
 custom_apps = ["supports", "account", "discussion", "community", "analytics"]
 INSTALLED_APPS = default_apps + third_party_apps + custom_apps
+
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+     'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -75,9 +78,17 @@ MIDDLEWARE = [
 ]
 # CORS_ALLOW_ALL_ORIGINS =True
 CORS_ALLOWED_ORIGINS=[
-    "http://localhost:3000","localhost" ,
+    "http://localhost:3000",
     os.getenv("allowed_cors_origin")
 ]
+
+# Tells Django to trust Render's reverse proxy header for secure connections
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+CORS_ALLOW_CREDENTIALS = True
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication"
@@ -168,6 +179,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Enables aggressive caching and file compression for faster load times
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

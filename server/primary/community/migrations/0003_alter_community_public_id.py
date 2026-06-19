@@ -6,12 +6,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('discussion', '0002_alter_discussion_public_id'),
+        ('community', '0002_alter_community_public_id'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='discussion',
+            model_name='community',
             name='public_id',
             field=models.CharField(default='P7pbiZzjSzY54MPyv6qpPS', max_length=50),
         ),

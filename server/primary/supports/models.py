@@ -13,7 +13,7 @@ class MetaStamps(models.Model):
     class Meta:
         abstract = True
 
-
+ 
 class Comment(MetaStamps):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()

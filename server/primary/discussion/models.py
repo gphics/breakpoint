@@ -10,4 +10,4 @@ class Discussion(MetaStamps):
     community = models.ForeignKey("community.Community", on_delete=models.CASCADE)
     members = models.JSONField(null = True, default=list)
     class Meta:
-        db_table = "discussion" 
+        db_table = "discussion"  

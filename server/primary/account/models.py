@@ -12,6 +12,6 @@ class Profile(MetaStamps):
     address = models.TextField(null=True, blank=True)
     avatar = models.CharField(max_length=50, null=True, blank=True)
     communities = models.JSONField(null = True)
-
+ 
     class Meta:
         db_table = "profile"

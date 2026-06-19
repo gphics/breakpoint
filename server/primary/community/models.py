@@ -16,4 +16,4 @@ class Community(MetaStamps):
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        db_table = "community"
+        db_table = "community" 
